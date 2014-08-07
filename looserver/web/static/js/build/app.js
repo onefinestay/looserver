@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 
-var App = React.createClass({
+var App = React.createClass({displayName: 'App',
     getInitialState: function() {
         return {
             'loos': this.props.loos
@@ -25,17 +25,17 @@ var App = React.createClass({
     },
     render: function() {
         var loos = _.map(this.state.loos, function(loo) {
-            return <Loo loo={ loo }/>;
+            return Loo({loo: loo });
         });
         return (
-            <div className="row">
-                { loos }
-            </div>
+            React.DOM.div({className: "row"}, 
+                loos 
+            )
         );
     }
 });
 
-var Loo = React.createClass({
+var Loo = React.createClass({displayName: 'Loo',
     render: function() {
         var cx = React.addons.classSet;
         var classes = cx({
@@ -53,12 +53,12 @@ var Loo = React.createClass({
         };
 
         return (
-            <div className="columns large-6 loo-container">
-              <div className={classes}>
-                <h2>{ this.props.loo.label }</h2>
-                <h3>{ statusString(this.props.loo.in_use) }</h3>
-              </div>
-            </div>
+            React.DOM.div({className: "columns large-6 loo-container"}, 
+              React.DOM.div({className: classes}, 
+                React.DOM.h2(null,  this.props.loo.label), 
+                React.DOM.h3(null,  statusString(this.props.loo.in_use) )
+              )
+            )
         );
     }
 });

@@ -1,7 +1,34 @@
-.loo {
-    background: #2ecc71;
+h1,
+h2,
+h3,
+h4 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
 }
 
-.loo-unavailable {
+header.row {
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 3%;
+}
+
+.loo-container {
+    margin-bottom: 15px;
+}
+
+.loo {
+    background: #2ecc71;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.loo.loo-unavailable {
     background: #e74c3c;
+}
+
+@media only screen and (max-width: 40em) {
+    header svg {
+        width: 60px;
+        height: 80px;
+    }
 }
