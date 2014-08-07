@@ -1,4 +1,5 @@
 click
 pybluez
+pytz
 redis
 sqlalchemy

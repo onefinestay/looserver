@@ -2,15 +2,16 @@ from sqlalchemy import create_engine
 from looserver import settings
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, sessionmaker
 
 engine = create_engine(settings.DB_URI)
+Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
 
 
-class Toilet(Base):
-    __tablename__ = 'toilets'
+class Loo(Base):
+    __tablename__ = 'loos'
 
     id = Column(Integer, primary_key=True)
     identifier = Column(String)  # bluetooth identifier
@@ -25,6 +26,6 @@ class Event(Base):
 
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime)
-    toilet_id = Column(Integer, ForeignKey('toilets.id'))
-    toilet = relationship(Toilet, backref='events')
+    loo_id = Column(Integer, ForeignKey('loos.id'))
+    loo = relationship(Loo, backref='events')
     in_use = Column(Boolean)

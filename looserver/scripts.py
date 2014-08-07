@@ -1,8 +1,9 @@
 import click
-from looserver.db import Base, engine, Toilet
-from sqlalchemy.orm import sessionmaker
+import logging
+from looserver.db import Base, engine, Loo, Session
+from looserver.server import Server
 
-Session = sessionmaker(bind=engine)
+logging.basicConfig(level=logging.DEBUG)
 
 
 @click.group()
@@ -22,7 +23,16 @@ def add(identifier, label):
     """Add a loo"""
     session = Session()
 
-    loo = Toilet(identifier=identifier, label=label)
+    loo = Loo(identifier=identifier, label=label)
     session.add(loo)
     session.commit()
-    click.echo("Toilet added with label {}".format(label))
+    click.echo("Loo added with label {}".format(label))
+
+
+@cli.command()
+def serve():
+    server = Server()
+    try:
+        server.run()
+    except KeyboardInterrupt:
+        server.stop()
