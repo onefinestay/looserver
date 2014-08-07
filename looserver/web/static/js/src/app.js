@@ -4,7 +4,7 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             'loos': this.props.loos
-        }
+        };
     },
     componentDidMount: function() {
         var socket = io.connect(
@@ -16,7 +16,7 @@ var App = React.createClass({
             var inUse = loo.in_use;
 
             var updateAction = {};
-            updateAction[identifier] = {'in_use': {$set: inUse}}
+            updateAction[identifier] = {'in_use': {$set: inUse}};
 
             var updatedLoos = React.addons.update(
                 this.state.loos, updateAction);
@@ -25,27 +25,24 @@ var App = React.createClass({
     },
     render: function() {
         var loos = _.map(this.state.loos, function(loo) {
-            return <Loo loo={ loo }/>
+            return <Loo loo={ loo }/>;
         });
         return (
             <div className="row">
-                <h2>Hello world</h2>
                 { loos }
             </div>
-        )
+        );
     }
 });
-
 
 var Loo = React.createClass({
     render: function() {
         var cx = React.addons.classSet;
         var classes = cx({
-            "columns": true,
-            "large-6": true,
             "loo": true,
             "loo-unavailable": this.props.loo.in_use
         });
+
         var statusString = function(in_use) {
             if (in_use) {
                 return "Engaged";
@@ -54,12 +51,14 @@ var Loo = React.createClass({
                 return "Available";
             }
         };
+
         return (
-            <div className={classes}>
+            <div className="columns large-6 loo-container">
+              <div className={classes}>
                 <h2>{ this.props.loo.label }</h2>
                 <h3>{ statusString(this.props.loo.in_use) }</h3>
-
+              </div>
             </div>
-        )
+        );
     }
 });
