@@ -1,3 +1,5 @@
+from sqlalchemy.sql import func
+
 from looserver.db import Session, Loo, Event
 
 
@@ -13,6 +15,7 @@ class Reporter(object):
             print loo.label
             print "======"
             print "Times used:", self.times_used(loo)
+            print "Total time in use:", self.total_time_in_use(loo)
 
     def times_used(self, loo):
         session = self.session
@@ -23,3 +26,13 @@ class Reporter(object):
         ).count()
 
         return events
+
+    def total_time_in_use(self, loo):
+        session = self.session
+
+        total_time = session.query(func.sum(Event.seconds_in_state)).filter(
+            Event.loo == loo,
+            Event.in_use == True
+        ).scalar()
+
+        return total_time

@@ -1,5 +1,5 @@
+alembic
 click
 pybluez
-pytz
 redis
 sqlalchemy

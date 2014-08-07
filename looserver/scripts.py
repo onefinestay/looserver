@@ -1,6 +1,6 @@
 import click
 import logging
-from looserver.db import Base, engine, Loo, Session
+from looserver.db import Loo, Session
 from looserver.server import Server
 from looserver.stats import Reporter
 
@@ -10,11 +10,6 @@ logging.basicConfig(level=logging.DEBUG)
 @click.group()
 def cli():
     """LooServer"""
-
-
-@cli.command()
-def init_db():
-    Base.metadata.create_all(engine)
 
 
 @cli.command()

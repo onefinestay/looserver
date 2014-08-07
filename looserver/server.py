@@ -2,7 +2,6 @@ import logging
 from time import sleep
 from datetime import datetime
 
-import pytz
 from sqlalchemy import desc
 
 from looserver.db import Session, Loo, Event
@@ -44,7 +43,7 @@ class Server(object):
         session = self.session
 
         loo.in_use = in_use
-        now = datetime.now(pytz.utc)
+        now = datetime.now()
 
         previous_event = (
             session.query(Event)
