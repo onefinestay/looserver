@@ -12,12 +12,6 @@ from looserver.db import Session, Loo, Event
 logger = logging.getLogger(__name__)
 
 
-def poll_loo(identifier):
-    with open('/tmp/fake_loo_{}'.format(identifier)) as handle:
-        status = handle.read().strip()
-    return bool(status)
-
-
 class Server(object):
     def __init__(self):
         self.session = Session()
@@ -39,7 +33,7 @@ class Server(object):
     def tick(self):
         # polling RF
         for loo in self.loos:
-            in_use = poll_loo(loo.identifier)
+            in_use = bool(self.redis.get(loo.redis_key))
             logging.info("Status of {}: {}".format(loo.label, in_use))
             if in_use != loo.in_use:
                 self.update_status(loo, in_use)
