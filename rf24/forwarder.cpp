@@ -23,6 +23,7 @@ TMRh20 2014 - Updated to work with optimized RF24 Arduino library
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unistd.h>
 #include <RF24/RF24.h>
 #include <hiredis.h>
 
@@ -137,7 +138,7 @@ int main(int argc, char** argv){
 
         }
 
-
+    usleep(100 * 1000); // microseconds
 	} // forever loop
 
 
