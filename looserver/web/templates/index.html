@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>LooServer</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.11.0/react-with-addons.js"></script>
+
+    <script src="{{ url_for('static', filename='js/build/app.js') }}" /></script>
+</head>
+<body>
+<div class="row">
+    <div class="large-12 columns">
+        <h1>LooServer</h1>
+    </div>
+</div>
+
+<div id="app"></div>
+
+<script type="text/javascript" charset="utf-8">
+    var loos = {{ loos|tojson|safe }};
+    React.renderComponent(
+        App({
+            'loos': loos
+        }), document.getElementById('app'));
+</script>
+</body>
+</html>
+

@@ -1,3 +1,4 @@
 *.db
 *.egg-info/
 *.pyc
+looserver/web/static/js/build

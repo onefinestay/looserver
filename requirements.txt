@@ -1,5 +1,6 @@
 alembic
 click
+flask-socketio
 pybluez
 redis
 sqlalchemy
