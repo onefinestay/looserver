@@ -1,10 +1,15 @@
 from gevent import monkey
 monkey.patch_all()
 
-import time
+import json
 from threading import Thread
-from flask import Flask, render_template, session, request
-from flask.ext.socketio import SocketIO, emit, join_room, leave_room
+
+from flask import Flask, render_template
+from flask.ext.socketio import SocketIO
+import redis
+
+from looserver import settings
+from looserver.db import Loo, Session
 
 app = Flask(__name__)
 app.debug = True
@@ -15,86 +20,47 @@ thread = None
 
 def background_thread():
     """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        count += 1
+    redis_ = redis.StrictRedis()
+    pubsub = redis_.pubsub()
+    pubsub.subscribe(settings.EVENTS_CHANNEL)
+    for event in pubsub.listen():
+        if event['type'] != 'message':
+            continue
+        data = json.loads(event['data'])
+        identifier = data['loo']
+        in_use = data['in_use']
+
         socketio.emit(
             'update', {
                 'loo': {
-                    'identifier': 'foo',
-                    'in_use': count % 2 == 0,
+                    'identifier': identifier,
+                    'in_use': in_use
                 },
             },
             namespace='/loos')
-        time.sleep(1)
 
 
 @app.route('/')
 def index():
-    global thread
-    if thread is None:
-        thread = Thread(target=background_thread)
-        thread.start()
+    session = Session()
     return render_template('index.html', loos={
-        'foo': {
-            'identifier': 'foo',
-            'label': 'my foo',
-            'floor': 1,
-            'in_use': False,
-        },
+        loo.identifier: {
+            'identifier': loo.identifier,
+            'label': loo.label,
+            'floor': loo.floor,
+            'in_use': loo.in_use,
+        } for loo in session.query(Loo)
     })
 
 
-@socketio.on('my event', namespace='/loos')
-def test_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': message['data'], 'count': session['receive_count']})
-
-
-@socketio.on('my broadcast event', namespace='/test')
-def test_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': message['data'], 'count': session['receive_count']},
-         broadcast=True)
-
-
-@socketio.on('join', namespace='/test')
-def join(message):
-    join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': 'In rooms: ' + ', '.join(request.namespace.rooms),
-          'count': session['receive_count']})
-
-
-@socketio.on('leave', namespace='/test')
-def leave(message):
-    leave_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': 'In rooms: ' + ', '.join(request.namespace.rooms),
-          'count': session['receive_count']})
-
-
-@socketio.on('my room event', namespace='/test')
-def send_room_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': message['data'], 'count': session['receive_count']},
-         room=message['room'])
-
-
-@socketio.on('connect', namespace='/test')
-def test_connect():
-    emit('my response', {'data': 'Connected', 'count': 0})
-
-
-@socketio.on('disconnect', namespace='/test')
-def test_disconnect():
-    print('Client disconnected')
+# is there a better way to declare a namespace
+@socketio.on('declaration', namespace='/loos')
+def declaration(message):
+    pass
 
 
 if __name__ == '__main__':
+    thread = Thread(target=background_thread)
+    thread.start()
+
     socketio.run(app)
