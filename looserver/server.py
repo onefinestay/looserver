@@ -24,7 +24,7 @@ class Server(object):
         logger.info("Starting server")
         while self.running:
             self.tick()
-            sleep(1)
+            sleep(.1)
 
     def stop(self):
         self.running = False
