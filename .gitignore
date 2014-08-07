@@ -2,3 +2,4 @@
 *.egg-info/
 *.pyc
 looserver/web/static/js/build/.module-cache
+rf24/forwarder
