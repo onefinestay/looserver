@@ -70,10 +70,11 @@ int pub(unsigned long value){
       exit(1);
   }
 
-  // reply = (redisReply *) redisCommand(conn,"PUBLISH foo bar");
-  reply = (redisReply *) redisCommand(conn,"PUBLISH foo %lu", value);
-
+  reply = (redisReply *) redisCommand(conn,"SET loo:%lu 1", value);
   freeReplyObject(reply);
+  reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 1", value);
+  freeReplyObject(reply);
+
   redisFree(conn);
 
 }
