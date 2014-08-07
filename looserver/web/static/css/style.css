@@ -22,6 +22,10 @@ header.row {
     text-align: center;
 }
 
+.loo h2, .loo h3 {
+    color: #fff;
+}
+
 .loo.loo-unavailable {
     background: #e74c3c;
 }
@@ -31,4 +35,25 @@ header.row {
         width: 60px;
         height: 80px;
     }
+}
+
+table.stats td {
+    padding: 10px;
+    border-bottom: 1px solid #bebebe;
+}
+
+table.stats tr:last-child td {
+    border-bottom: none; 
+}
+
+#stats_graph {
+    margin-top: 50px;
+}
+
+.loo-stats h2 {
+    text-align: center;
+}
+
+.loo-stats table {
+    margin: 0 auto;
 }
