@@ -32,3 +32,12 @@ header.row {
         height: 80px;
     }
 }
+
+table.stats td {
+    padding: 10px;
+    border-bottom: 1px solid #bebebe;
+}
+
+table.stats tr:last-child td {
+    border-bottom: none; 
+}

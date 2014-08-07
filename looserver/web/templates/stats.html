@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Stats{% endblock %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='js/build/stats.js') }}" /></script>
+{% endblock %}
+
+{% block content %}
+<div id="stats_last_24"></div>
+<div id="stats_forever"></div>
+
+<script type="text/javascript" charset="utf-8">
+    var last_24 = {{ last_24|tojson|safe }};
+    var forever = {{ forever|tojson|safe }};
+    React.renderComponent(
+        Stats({
+            'data': last_24,
+            'title': 'Last 24 hours'
+        }), document.getElementById('stats_last_24'));
+</script>
+{% endblock %}

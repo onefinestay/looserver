@@ -28,6 +28,13 @@ class Loo(Base):
     def redis_key(self):
         return "loo:{}".format(self.identifier)
 
+    def as_dict(self):
+        return {
+            'identifier': self.identifier,
+            'label': self.label,
+            'in_use': self.in_use,
+        }
+
 
 class Event(Base):
     __tablename__ = 'events'
