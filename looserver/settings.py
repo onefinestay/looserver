@@ -7,3 +7,4 @@ BASE_DIR = os.path.abspath(
 DB_URI = 'sqlite:///{}/looserver.db'.format(BASE_DIR)
 
 EVENTS_CHANNEL = 'loo_events'
+DEVICE_CHANNEL = 'device_events'

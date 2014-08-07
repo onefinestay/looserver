@@ -24,6 +24,10 @@ class Loo(Base):
     label = Column(String)
     in_use = Column(Boolean)
 
+    @property
+    def redis_key(self):
+        return "loo:{}".format(self.identifier)
+
 
 class Event(Base):
     __tablename__ = 'events'
