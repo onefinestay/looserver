@@ -2,8 +2,10 @@ import logging
 from time import sleep
 from datetime import datetime
 
+import redis
 from sqlalchemy import desc
 
+from looserver import settings
 from looserver.db import Session, Loo, Event
 
 logger = logging.getLogger(__name__)
@@ -18,6 +20,8 @@ def poll_loo(identifier):
 class Server(object):
     def __init__(self):
         self.session = Session()
+        self.redis = redis.StrictRedis()
+
         self.loos = self.session.query(Loo).all()
         self.running = True
 
@@ -59,3 +63,8 @@ class Server(object):
         session.add(event)
 
         session.commit()
+
+        self.redis.publish(settings.EVENTS_CHANNEL, {
+            'loo': loo.identifier,
+            'in_use': in_use,
+        })

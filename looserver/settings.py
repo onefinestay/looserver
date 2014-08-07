@@ -5,3 +5,5 @@ BASE_DIR = os.path.abspath(
 )
 
 DB_URI = 'sqlite:///{}/looserver.db'.format(BASE_DIR)
+
+EVENTS_CHANNEL = 'loo_events'
