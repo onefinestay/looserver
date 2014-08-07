@@ -72,7 +72,7 @@ int pub(unsigned long value){
 
   reply = (redisReply *) redisCommand(conn,"SET loo:%lu 1", value);
   freeReplyObject(reply);
-  reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 1", value);
+  reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 2", value);
   freeReplyObject(reply);
 
   redisFree(conn);
