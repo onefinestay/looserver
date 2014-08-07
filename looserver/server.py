@@ -1,3 +1,4 @@
+import json
 import logging
 from time import sleep
 from datetime import datetime
@@ -64,7 +65,7 @@ class Server(object):
 
         session.commit()
 
-        self.redis.publish(settings.EVENTS_CHANNEL, {
+        self.redis.publish(settings.EVENTS_CHANNEL, json.dumps({
             'loo': loo.identifier,
             'in_use': in_use,
-        })
+        }))
