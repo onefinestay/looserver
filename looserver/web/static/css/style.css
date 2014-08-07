@@ -41,3 +41,7 @@ table.stats td {
 table.stats tr:last-child td {
     border-bottom: none; 
 }
+
+#stats_graph {
+    margin-top: 50px;
+}
