@@ -42,4 +42,8 @@ setup(
     long_description=open(make_abs('README.rst')).read(),
     include_package_data=True,
     zip_safe=False,
+    entry_points='''
+        [console_scripts]
+        looserver=looserver.scripts:cli
+    ''',
 )
