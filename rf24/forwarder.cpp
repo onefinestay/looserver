@@ -24,6 +24,7 @@ TMRh20 2014 - Updated to work with optimized RF24 Arduino library
 #include <sstream>
 #include <string>
 #include <RF24/RF24.h>
+#include <hiredis.h>
 
 using namespace std;
 //
@@ -47,10 +48,39 @@ const uint8_t pipes[][6] = {"1Node","2Node"};
 //const uint64_t pipes[2] = { 0xABCDABCD71LL, 0x544d52687CLL };
 
 
+int pub(unsigned long value){
+
+  // Setup redis
+  redisContext *conn;
+  redisReply *reply;
+  // const char *hostname = (argc > 1) ? argv[1] : "127.0.0.1";
+  // int port = (argc > 2) ? atoi(argv[2]) : 6379;
+  const char *hostname = "127.0.0.1";
+  int port = 6379;
+
+  struct timeval timeout = { 1, 500000 }; // 1.5 seconds
+  conn = redisConnectWithTimeout(hostname, port, timeout);
+  if (conn == NULL || conn->err) {
+      if (conn) {
+          printf("Connection error: %s\n", conn->errstr);
+          redisFree(conn);
+      } else {
+          printf("Connection error: can't allocate redis context\n");
+      }
+      exit(1);
+  }
+
+  // reply = (redisReply *) redisCommand(conn,"PUBLISH foo bar");
+  reply = (redisReply *) redisCommand(conn,"PUBLISH foo %lu", value);
+
+  freeReplyObject(reply);
+  redisFree(conn);
+
+}
+
+
 int main(int argc, char** argv){
 
-  bool role_ping_out = true, role_pong_back = false;
-  bool role = role_pong_back;
 
   // Setup and configure rf radio
   radio.begin();
@@ -98,6 +128,9 @@ int main(int argc, char** argv){
 
             // Spew it
             printf("Got payload(%d) %lu...\n",sizeof(unsigned long), got_time);
+            pub(got_time);
+            printf("foo\n");
+            // printf("PUBLISH: %s\n", reply->str);
 
             delay(925); //Delay after payload responded to, minimize RPi CPU time
 
@@ -105,6 +138,7 @@ int main(int argc, char** argv){
 
 
 	} // forever loop
+
 
   return 0;
 }
