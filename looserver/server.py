@@ -3,6 +3,7 @@ from time import sleep
 from datetime import datetime
 
 import pytz
+from sqlalchemy import desc
 
 from looserver.db import Session, Loo, Event
 
@@ -43,6 +44,19 @@ class Server(object):
         session = self.session
 
         loo.in_use = in_use
-        event = Event(timestamp=datetime.now(pytz.utc), loo=loo, in_use=in_use)
+        now = datetime.now(pytz.utc)
+
+        previous_event = (
+            session.query(Event)
+            .filter(Event.loo == loo)
+            .order_by(desc(Event.timestamp))
+        ).first()
+
+        if previous_event is not None:
+            diff = (now - previous_event.timestamp).total_seconds()
+            previous_event.seconds_in_state = diff
+
+        event = Event(timestamp=now, loo=loo, in_use=in_use)
         session.add(event)
+
         session.commit()

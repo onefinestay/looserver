@@ -2,6 +2,7 @@ import click
 import logging
 from looserver.db import Base, engine, Loo, Session
 from looserver.server import Server
+from looserver.stats import Reporter
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -36,3 +37,9 @@ def serve():
         server.run()
     except KeyboardInterrupt:
         server.stop()
+
+
+@cli.command()
+def stats():
+    reporter = Reporter()
+    reporter.report()
