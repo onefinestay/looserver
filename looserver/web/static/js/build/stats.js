@@ -32,7 +32,7 @@ var LooStat = React.createClass({displayName: 'LooStat',
         });
 
         return (
-            React.DOM.div({className: "columns large-6 "}, 
+            React.DOM.div({className: "columns large-6 loo-stats"}, 
                 React.DOM.h2(null,  this.props.loo.label), 
                 React.DOM.table({className: "stats"}, rows )
             )
@@ -72,22 +72,6 @@ var StatsGraph = React.createClass({displayName: 'StatsGraph',
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: 'Total duration',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                labels: {
-                    format: '{value} seconds',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
-                },
-                min: 0,
-                opposite: true
-            }, { // Tertiary yAxis
-                gridLineWidth: 0,
-                title: {
                     text: 'Average duration',
                     style: {
                         color: Highcharts.getOptions().colors[2]
@@ -120,21 +104,10 @@ var StatsGraph = React.createClass({displayName: 'StatsGraph',
                 yAxis: 0,
                 data: this.props.data.number_of_visits
             }, {
-                name: 'Total duration',
-                type: 'scatter',
-                yAxis: 1,
-                data: this.props.data.total_duration,
-                marker: {
-                    symbol: 'diamond'
-                },
-                dashStyle: 'shortdot',
-                tooltip: {
-                    valueSuffix: ' seconds'
-                }
-            }, {
                 name: 'Average duration',
                 type: 'spline',
-                yAxis: 2,
+                yAxis: 1,
+                color: Highcharts.getOptions().colors[2],
                 data: this.props.data.average_duration,
                 tooltip: {
                     valueSuffix: ' seconds'

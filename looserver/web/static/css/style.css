@@ -22,6 +22,10 @@ header.row {
     text-align: center;
 }
 
+.loo h2, .loo h3 {
+    color: #fff;
+}
+
 .loo.loo-unavailable {
     background: #e74c3c;
 }
@@ -44,4 +48,12 @@ table.stats tr:last-child td {
 
 #stats_graph {
     margin-top: 50px;
+}
+
+.loo-stats h2 {
+    text-align: center;
+}
+
+.loo-stats table {
+    margin: 0 auto;
 }
