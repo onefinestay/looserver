@@ -15,9 +15,29 @@ var Stats = React.createClass({
 
 var humanizeNumber = function(number, unit) {
     if (unit == 'seconds') {
-        return number.toFixed(2) + ' seconds';
+        var hours = Math.floor(number / (60 * 60));
+        number = number - hours * 60 * 60;
+        var minutes = Math.floor(number / 60);
+        number = number - minutes * 60;
+        var seconds = Math.floor(number)
+
+        var output = ''
+        if (hours) {
+            output += hours + ' hour' + pluralize(hours) + ' ';
+        }
+
+        if (minutes) {
+            output += minutes + ' minute' + pluralize(minutes) + ' and ';
+        }
+
+        output += seconds + ' second' + pluralize(seconds);
+        return output;
     }
     return number;
+};
+
+var pluralize = function(number) {
+    return number == 1 ? '' : 's';
 };
 
 var LooStat = React.createClass({
