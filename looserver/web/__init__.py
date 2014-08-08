@@ -3,9 +3,13 @@ monkey.patch_all()
 
 import datetime
 import json
+import os
 from threading import Thread
 
-from flask import Flask, render_template, jsonify
+from flask import (
+    Flask, render_template, jsonify,
+    send_from_directory
+)
 from flask.ext.socketio import SocketIO
 import redis
 
@@ -85,6 +89,15 @@ def stats_json():
 @socketio.on('declaration', namespace='/loos')
 def declaration(message):
     pass
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'img/favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
 
 
 if __name__ == '__main__':
