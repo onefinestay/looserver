@@ -1,3 +1,4 @@
+from datetime import datetime
 from collections import defaultdict
 
 from sqlalchemy.sql import func
@@ -92,26 +93,27 @@ class Reporter(object):
 
     def series_data(self):
         session = self.session
+        since = self.since
 
-        if self.since is None:
+        if since is None:
             return [], [], [], []
 
-        start = self.since.hour
+        start = datetime(since.year, since.month, since.day, since.hour + 1)
 
-        hours = [h % 24 for h in xrange(start, start + 24)]
+        hours = [h % 24 for h in xrange(start.hour, start.hour + 25)]
 
         data_count = [0] * 24
         data_duration_total = [0] * 24
         data_duration_average = []
 
         query = session.query(Event).filter(
-            Event.timestamp > self.since,
+            Event.timestamp > start,
             Event.in_use == True
-        )
+        ).order_by(Event.timestamp)
 
         for event in query:
             hour = event.timestamp.hour
-            index = hour - start
+            index = hour - start.hour
 
             if event.seconds_in_state is None:
                 continue
