@@ -1,5 +1,4 @@
 from datetime import datetime
-from collections import defaultdict
 
 from sqlalchemy.sql import func
 
@@ -29,7 +28,10 @@ class Reporter(object):
             total_time_in_use = self.total_time_in_use(loo)
             times_used = self.times_used(loo)
 
-            average_time_in_use = total_time_in_use / times_used
+            try:
+                average_time_in_use = total_time_in_use / times_used
+            except ZeroDivisionError:
+                average_time_in_use = 0
 
             per_loo_stats.append({
                 'loo': loo.as_dict(),
@@ -89,7 +91,7 @@ class Reporter(object):
             Event.in_use == True
         ).scalar()
 
-        return total_time
+        return total_time or 0
 
     def series_data(self):
         session = self.session
