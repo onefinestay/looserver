@@ -47,7 +47,7 @@ var Loo = React.createClass({displayName: 'Loo',
         };
 
         return (
-          React.DOM.div({className: "columns large-6"}, 
+          React.DOM.div({className: "columns large-6 medium-6"}, 
             React.DOM.div({className: "loo-container"}, 
               React.DOM.div({className: classes, style: styles}, 
                 React.DOM.div({className: "loo-available"}, 

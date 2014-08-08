@@ -47,7 +47,7 @@ var Loo = React.createClass({
         };
 
         return (
-          <div className="columns large-6">
+          <div className="columns large-6 medium-6">
             <div className="loo-container">
               <div className={classes} style={styles}>
                 <div className="loo-available">
