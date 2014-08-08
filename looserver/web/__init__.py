@@ -18,7 +18,7 @@ from looserver.db import Loo, Session
 from looserver.stats import Reporter
 
 app = Flask(__name__)
-# app.debug = True
+app.debug = True
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 thread = None

@@ -36,6 +36,60 @@ var App = React.createClass({displayName: 'App',
 });
 
 var Loo = React.createClass({displayName: 'Loo',
+    getInitialState: function() {
+        return {
+            hovering: false,
+            notifying: false
+        };
+    },
+    handleMouseEnter: function(event) {
+        this.setState({hovering: true})
+    },
+    handleMouseLeave: function(event) {
+        this.setState({hovering: false})
+    },
+    handleClick: function(event) {
+        var Notification = (
+            window.Notification ||
+            window.mozNotification ||
+            window.webkitNotification
+        );
+
+        if (this.state.notifying) {
+            this.setState({notifying: false});
+            return;
+        }
+
+        Notification.requestPermission(function (permission) {
+            if (permission) {
+                this.setState({notifying: true})
+            }
+        }.bind(this));
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+        if (
+            !this.props.loo.in_use &&
+            prevProps.loo.in_use &&
+            this.state.notifying
+        ) {
+            var imageUrl = (
+                'http://' + document.domain + ':' + location.port +
+                '/favicon.ico'
+            );
+            var notification = new Notification(
+                "Time In Lieu", {
+                body: this.props.loo.label + " is now available",
+                icon: imageUrl
+            });
+            var clearNotification = function() {
+                notification.close();
+            };
+            setTimeout(clearNotification, 5000);
+            this.setState({notifying: false});
+        }
+    },
+
     render: function() {
         var cx = React.addons.classSet;
         var classes = cx({
@@ -48,7 +102,11 @@ var Loo = React.createClass({displayName: 'Loo',
 
         return (
           React.DOM.div({className: "columns large-6 medium-6"}, 
-            React.DOM.div({className: "loo-container"}, 
+            React.DOM.div({
+                className: "loo-container", 
+                onMouseEnter: this.handleMouseEnter, 
+                onMouseLeave: this.handleMouseLeave
+            }, 
               React.DOM.div({className: classes, style: styles}, 
                 React.DOM.div({className: "loo-available"}, 
                   React.DOM.h3(null, "Available")
@@ -57,7 +115,14 @@ var Loo = React.createClass({displayName: 'Loo',
                   React.DOM.h3(null, "Engaged")
                 )
               ), 
-              React.DOM.h2(null,  this.props.loo.label)
+              React.DOM.h2(null,  this.props.loo.label), 
+               this.state.hovering ?
+                React.DOM.a({className: "overlay", onClick:  this.handleClick}, 
+                    React.DOM.div({className: "overlay-text"}, 
+                        this.state.notifying ? 'Stop notifying' : 'Notify me'
+                    )
+                ) : null
+              
             )
           )
         );

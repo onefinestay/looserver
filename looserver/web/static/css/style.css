@@ -79,7 +79,7 @@ table.stats tr td:first-child {
 }
 
 table.stats tr:last-child td {
-    border-bottom: none; 
+    border-bottom: none;
 }
 
 #stats_graph {
@@ -92,4 +92,30 @@ table.stats tr:last-child td {
 
 .loo-stats table {
     margin: 0 auto;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .7);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.overlay-text {
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    top: 50%;
+    font-size: 2rem;
+    line-height: 7rem;
 }

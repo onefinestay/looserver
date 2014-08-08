@@ -36,6 +36,60 @@ var App = React.createClass({
 });
 
 var Loo = React.createClass({
+    getInitialState: function() {
+        return {
+            hovering: false,
+            notifying: false
+        };
+    },
+    handleMouseEnter: function(event) {
+        this.setState({hovering: true})
+    },
+    handleMouseLeave: function(event) {
+        this.setState({hovering: false})
+    },
+    handleClick: function(event) {
+        var Notification = (
+            window.Notification ||
+            window.mozNotification ||
+            window.webkitNotification
+        );
+
+        if (this.state.notifying) {
+            this.setState({notifying: false});
+            return;
+        }
+
+        Notification.requestPermission(function (permission) {
+            if (permission) {
+                this.setState({notifying: true})
+            }
+        }.bind(this));
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+        if (
+            !this.props.loo.in_use &&
+            prevProps.loo.in_use &&
+            this.state.notifying
+        ) {
+            var imageUrl = (
+                'http://' + document.domain + ':' + location.port +
+                '/favicon.ico'
+            );
+            var notification = new Notification(
+                "Time In Lieu", {
+                body: this.props.loo.label + " is now available",
+                icon: imageUrl
+            });
+            var clearNotification = function() {
+                notification.close();
+            };
+            setTimeout(clearNotification, 5000);
+            this.setState({notifying: false});
+        }
+    },
+
     render: function() {
         var cx = React.addons.classSet;
         var classes = cx({
@@ -48,7 +102,11 @@ var Loo = React.createClass({
 
         return (
           <div className="columns large-6 medium-6">
-            <div className="loo-container">
+            <div
+                className="loo-container"
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}
+            >
               <div className={classes} style={styles}>
                 <div className="loo-available">
                   <h3>Available</h3>
@@ -58,6 +116,13 @@ var Loo = React.createClass({
                 </div>
               </div>
               <h2>{ this.props.loo.label }</h2>
+              { this.state.hovering ?
+                <a className="overlay" onClick={ this.handleClick }>
+                    <div className="overlay-text">
+                        {this.state.notifying ? 'Stop notifying' : 'Notify me'}
+                    </div>
+                </a> : null
+              }
             </div>
           </div>
         );
