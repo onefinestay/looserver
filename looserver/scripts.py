@@ -4,7 +4,7 @@ from looserver.db import Loo, Session
 from looserver.server import Server
 from looserver.stats import Reporter
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 
 @click.group()
