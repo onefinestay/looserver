@@ -14,19 +14,46 @@ header.row {
 
 .loo-container {
     margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loo-container h2 {
+    color: #fff;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 10px;
 }
 
 .loo {
-    background: #2ecc71;
-    padding: 10px 20px;
     text-align: center;
+    width: calc(100% * 2);
+    overflow: hidden;
+    position: relative;
+
+    -webkit-transition: left 0.3s;
+    -moz-transition: left 0.3s;
+    transition: left 0.3s;
 }
 
-.loo h2, .loo h3 {
+.loo h3 {
     color: #fff;
 }
 
-.loo.loo-unavailable {
+.loo .loo-available,
+.loo .loo-unavailable {
+    float: left;
+    width: 50%;
+    padding-top: 70px;
+    padding-bottom: 10px;
+}
+
+.loo .loo-available {
+    background: #2ecc71;
+}
+
+.loo .loo-unavailable {
     background: #e74c3c;
 }
 
@@ -34,6 +61,11 @@ header.row {
     header svg {
         width: 60px;
         height: 80px;
+    }
+
+    .loo .loo-available,
+    .loo .loo-unavailable {
+        padding-top: 50px;
     }
 }
 

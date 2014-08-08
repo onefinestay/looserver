@@ -40,25 +40,26 @@ var Loo = React.createClass({displayName: 'Loo',
         var cx = React.addons.classSet;
         var classes = cx({
             "loo": true,
-            "loo-unavailable": this.props.loo.in_use
         });
 
-        var statusString = function(in_use) {
-            if (in_use) {
-                return "Engaged";
-            }
-            else {
-                return "Available";
-            }
+        var styles = {
+          left: this.props.loo.in_use ? '-100%' : '0'
         };
 
         return (
-            React.DOM.div({className: "columns large-6 loo-container"}, 
-              React.DOM.div({className: classes}, 
-                React.DOM.h2(null,  this.props.loo.label), 
-                React.DOM.h3(null,  statusString(this.props.loo.in_use) )
-              )
+          React.DOM.div({className: "columns large-6"}, 
+            React.DOM.div({className: "loo-container"}, 
+              React.DOM.div({className: classes, style: styles}, 
+                React.DOM.div({className: "loo-available"}, 
+                  React.DOM.h3(null, "Available")
+                ), 
+                React.DOM.div({className: "loo-unavailable"}, 
+                  React.DOM.h3(null, "Engaged")
+                )
+              ), 
+              React.DOM.h2(null,  this.props.loo.label)
             )
+          )
         );
     }
 });
