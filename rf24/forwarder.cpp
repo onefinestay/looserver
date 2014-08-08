@@ -23,6 +23,7 @@ TMRh20 2014 - Updated to work with optimized RF24 Arduino library
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <time.h>
 #include <unistd.h>
 #include <RF24/RF24.h>
 #include <hiredis.h>
@@ -49,7 +50,11 @@ const uint8_t pipes[][6] = {"1Node","2Node"};
 //const uint64_t pipes[2] = { 0xABCDABCD71LL, 0x544d52687CLL };
 
 
+timespec diff(timespec start, timespec end);
+
 int pub(unsigned long value){
+  timespec time1, time2;
+  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time1);
 
   // Setup redis
   redisContext *conn;
@@ -78,6 +83,8 @@ int pub(unsigned long value){
 
   redisFree(conn);
 
+  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &time2);
+  // cout << diff(time1,time2).tv_sec << ":" << diff(time1,time2).tv_nsec << endl;
 }
 
 
@@ -145,3 +152,16 @@ int main(int argc, char** argv){
   return 0;
 }
 
+
+timespec diff(timespec start, timespec end)
+{
+    timespec temp;
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        temp.tv_sec = end.tv_sec-start.tv_sec-1;
+        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+    } else {
+        temp.tv_sec = end.tv_sec-start.tv_sec;
+        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+    return temp;
+}
