@@ -116,6 +116,8 @@ var Loo = React.createClass({displayName: 'Loo',
                 )
               ), 
               React.DOM.h2(null,  this.props.loo.label), 
+               this.state.notifying ?
+              React.DOM.svg({className: "notification-icon"}, React.DOM.path({transform: "translate(0 30) scale(0.02 -0.02)", d: "M0 64v482q0 62 25 123l238 552q10 25 36.5 42t52.5 17h832q26 0 52.5 -17t36.5 -42l238 -552q25 -61 25 -123v-482q0 -26 -19 -45t-45 -19h-1408q-26 0 -45 19t-19 45zM197 576h316l95 -192h320l95 192h316q-1 3 -2.5 8t-2.5 8l-212 496h-708l-212 -496q-1 -2 -2.5 -8 t-2.5 -8z"})) : null, 
                this.state.hovering ?
                 React.DOM.a({className: "overlay", onClick:  this.handleClick}, 
                     React.DOM.div({className: "overlay-text"}, 

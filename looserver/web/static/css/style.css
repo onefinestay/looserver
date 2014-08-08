@@ -1,3 +1,4 @@
+body,
 h1,
 h2,
 h3,
@@ -118,4 +119,17 @@ table.stats tr:last-child td {
     top: 50%;
     font-size: 2rem;
     line-height: 7rem;
+}
+
+.notification-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+}
+
+.notification-icon path {
+    fill: #fff;
+    opacity: 0.8;
 }
