@@ -50,7 +50,12 @@ const uint8_t pipes[][6] = {"1Node","2Node"};
 //const uint64_t pipes[2] = { 0xABCDABCD71LL, 0x544d52687CLL };
 
 
-int pub(unsigned long value){
+
+int main(int argc, char** argv){
+  timespec time;
+  // for some reason read() reads 8 bytes, not 1, so make sure we allocate
+  // enough memory; otherwise it scribbles over other memory
+  int paylad[8];
 
   // Setup redis
   redisContext *conn;
@@ -59,6 +64,7 @@ int pub(unsigned long value){
   // int port = (argc > 2) ? atoi(argv[2]) : 6379;
   const char *hostname = "127.0.0.1";
   int port = 6379;
+
 
   struct timeval timeout = { 1, 500000 }; // 1.5 seconds
   conn = redisConnectWithTimeout(hostname, port, timeout);
@@ -71,19 +77,6 @@ int pub(unsigned long value){
       }
       exit(1);
   }
-
-  reply = (redisReply *) redisCommand(conn,"SET loo:%lu 1", value);
-  freeReplyObject(reply);
-  reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 2", value);
-  freeReplyObject(reply);
-
-  redisFree(conn);
-
-}
-
-
-int main(int argc, char** argv){
-  timespec time;
 
   // Setup and configure rf radio
   radio.begin();
@@ -115,30 +108,27 @@ int main(int argc, char** argv){
 
         if ( radio.available() )
         {
-            // Dump the payloads until we've gotten everything
-            unsigned long payload;
-
 
             // Fetch the payload, and see if this was the last one.
-            radio.read( &payload, sizeof(unsigned long) );
+            radio.read( paylad, sizeof(int) );
 
-            radio.stopListening();
-
-            radio.write( &payload, sizeof(unsigned long) );
-
-            // Now, resume listening so we catch the next packets.
-            radio.startListening();
-
-            // printf("Got payload(%d) %lu...\n",sizeof(unsigned long), payload);
             clock_gettime(CLOCK_REALTIME, &time);
-            pub(payload);
-            cout << "Received: " << payload << ", at " << time.tv_sec << "." << time.tv_nsec << endl;
+
+            // publich to redis
+            reply = (redisReply *) redisCommand(conn,"SET loo:%lu 1", paylad[0]);
+            freeReplyObject(reply);
+            reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 2", paylad[0]);
+            freeReplyObject(reply);
+
+            cout << "Received: " << paylad[0] << ", at " << time.tv_sec << "." << time.tv_nsec << endl;
 
         }
 
     usleep(100 * 1000); // microseconds
 	} // forever loop
 
+
+  redisFree(conn);
 
   return 0;
 }
