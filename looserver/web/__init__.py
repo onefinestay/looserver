@@ -76,8 +76,8 @@ def stats_json():
     forever, last_24 = get_stats()
 
     return jsonify(
-        forever=forever.get_stats(),
-        last_24=last_24.get_stats(),
+        forever=forever,
+        last_24=last_24,
     )
 
 
