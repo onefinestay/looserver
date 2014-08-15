@@ -5,6 +5,7 @@
 #include "RF24.h"
 #include "printf.h"
 
+
 // Arduino Pins
 int lock_vcc = 2;
 int lock_status = 3;
@@ -14,6 +15,7 @@ int LOO_ID = 1;
 int DOOR_ID = 1;
 
 // RF
+int CHANNEL = 1;      //MAX 127
 RF24 radio(8, 7);
 byte pipes[][6] = {"1Node","2Node"};
 
@@ -33,15 +35,17 @@ void setup() {
   pinMode(lock_vcc, OUTPUT);
   pinMode(lock_status, INPUT);
   pinMode(status_led, OUTPUT);
-  
+
   digitalWrite(buzzer, LOW);
   digitalWrite(lock_vcc, HIGH);
-  
+
   // Setup watchdog
   setup_watchdog(wdt_500ms);
-  
+
   // Setup and configure rf radio
   radio.begin();                          // Start up the radio
+  radio.setChannel(CHANNEL);
+  //radio.setPALevel(RF24_PA_HIGH);
   radio.setAutoAck(1);                    // Ensure autoACK is enabled
   radio.setRetries(15,15);                // Max delay between retries & number of retries
   //radio.setPayloadSize(sizeof(int));
@@ -49,23 +53,26 @@ void setup() {
   radio.openWritingPipe(pipes[1]);
   radio.openReadingPipe(1,pipes[0]);
   radio.printDetails();                   // Dump the configuration of the rf unit for debugging
+  radio.stopListening();
   }
 
 
 void send_message ( boolean state ){
   int payload = LOO_ID * 100;
   payload = payload + (DOOR_ID * 10);
-  
+  int write_status;
+
   if (state == HIGH) {
     printf("Toilet engaged\n\r");
     payload += 1;
   } else {
     printf("Toilet free\n\r");
   }
-  
-  radio.stopListening();                                    // First, stop listening so we can talk.
-  if (!radio.write( &payload, sizeof(int) )){ 
-    printf("Oops.\n\r");
+
+  //radio.stopListening();                                    // First, stop listening so we can talk.
+  write_status = radio.write( &payload, sizeof(int) );
+  if (!write_status){
+    printf("Error sending. Code: %d\n\r", write_status);
     report_led(2, 150);
   } else {
     printf("Payload: %i\n\r", payload);
@@ -85,7 +92,7 @@ void report_led(int times, int timeout){
 void loop(void){
   report_led(1, 50);
   radio.powerUp();
-  radio.startListening();
+  //radio.startListening();
   int lock_state = digitalRead(lock_status);
   send_message(lock_state);
   delay(100);
@@ -125,7 +132,7 @@ void do_sleep(void)
   WDTCSR |= _BV(WDIE);
   sleep_mode();                        // System sleeps here
                                        // The WDT_vect interrupt wakes the MCU from here
-  sleep_disable();                     // System continues execution here when watchdog timed out  
-  detachInterrupt(0);  
-  WDTCSR &= ~_BV(WDIE);  
+  sleep_disable();                     // System continues execution here when watchdog timed out
+  detachInterrupt(0);
+  WDTCSR &= ~_BV(WDIE);
 }
