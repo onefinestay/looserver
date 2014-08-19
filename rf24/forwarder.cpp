@@ -81,6 +81,7 @@ int main(int argc, char** argv){
   // Setup and configure rf radio
   radio.begin();
 
+  radio.setChannel(1);
   // optionally, increase the delay between retries & # of retries
   radio.setRetries(15,15);
   // Dump the configuration of the rf unit for debugging
@@ -114,13 +115,13 @@ int main(int argc, char** argv){
 
             clock_gettime(CLOCK_REALTIME, &time);
 
+            cout << "Received: " << paylad[0] << ", at " << time.tv_sec << "." << time.tv_nsec << endl;
+
             // publich to redis
             reply = (redisReply *) redisCommand(conn,"SET loo:%lu 1", paylad[0]);
             freeReplyObject(reply);
             reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 2", paylad[0]);
             freeReplyObject(reply);
-
-            cout << "Received: " << paylad[0] << ", at " << time.tv_sec << "." << time.tv_nsec << endl;
 
         }
 
