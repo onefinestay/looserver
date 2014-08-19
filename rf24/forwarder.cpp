@@ -120,7 +120,7 @@ int main(int argc, char** argv){
             // publich to redis
             reply = (redisReply *) redisCommand(conn,"SET loo:%lu 1", paylad[0]);
             freeReplyObject(reply);
-            reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 2", paylad[0]);
+            reply = (redisReply *) redisCommand(conn,"EXPIRE loo:%lu 5", paylad[0]);
             freeReplyObject(reply);
 
         }
